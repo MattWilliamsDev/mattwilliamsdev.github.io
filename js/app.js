@@ -90,6 +90,7 @@ app.Router = Backbone.Router.extend({
     },
     
     resume: function () {
+        console.log('Resume Route');
         if (!app.resumeView) {
             app.resumeView = new app.ResumeView();
             app.resumeView.render();

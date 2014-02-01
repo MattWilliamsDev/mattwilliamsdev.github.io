@@ -1,3 +1,3 @@
 # MattWilliamsDev.github.io Site
-Personal, public-facing github.io site. [http://mattwilliamsdev.github.io]
+Personal GitHub.io site - Built with Backbone JS. [http://mattwilliamsdev.github.io]
 

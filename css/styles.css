@@ -17,7 +17,7 @@ body {
 a,
 a:focus,
 a:hover {
-  color: #fff;
+  color: #eee;
 }
 
 a:hover {
@@ -54,7 +54,8 @@ a:hover {
 
 .masthead-nav > li > a:hover,
 .masthead-nav > li > a:focus {
-    background-color: transparent;
+    /*background-color: transparent;*/
+
     border-bottom-color: rgba(255,255,255,.25);
 }
 

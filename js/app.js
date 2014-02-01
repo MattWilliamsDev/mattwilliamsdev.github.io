@@ -56,12 +56,6 @@ var app = {
                         $('body').append($script);
                     }
                 }, url.returnType));
-            } else {
-                if (typeof console !== 'undefined') {
-                    console.error(element + ' not found');
-                } else {
-                    alert(element + ' not found');
-                }
             }
         });
 
@@ -116,10 +110,22 @@ app.Router = Backbone.Router.extend({
 
 $(document).on('ready', function () {
 
-    app.loader({
-        type: 'vendor',
-        elements: ['underscore/underscore.min', 'backbone/backbone.min']
-    }, function () {
+    if (!window._ || !window.Backbone) {
+        app.loader({
+            type: 'vendor',
+            elements: ['underscore/underscore.min', 'backbone/backbone.min']
+        }, function () {
+            app.loader({
+                type: 'views',
+                elements: ['HomeView', 'ResumeView', 'ContactView', 'ShellView']
+            }, function () {
+                app.router = new app.Router();
+                Backbone.history.start({
+                    // pushState: true
+                });
+            });
+        });
+    } else {
         app.loader({
             type: 'views',
             elements: ['HomeView', 'ResumeView', 'ContactView', 'ShellView']
@@ -129,6 +135,6 @@ $(document).on('ready', function () {
                 // pushState: true
             });
         });
-    });
+    }
 
 });

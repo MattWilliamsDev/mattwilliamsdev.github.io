@@ -1,20 +1,66 @@
 var app = {
-    views: {},
+    elements: {},
     models: {},
     
-    loadTemplates: function (views, callback) {
-        var deferreds = [];
+    loader: function (options, callback) {
+        var
+        type,
+        url = {},
+        elements = options.elements
+        deferreds = [];
 
-        $.each(views, function (index, view) {
-            if (app[view]) {
-                deferreds.push($.get('tpl/' + view + '.html', function (data) {
-                    app[view].prototype.template = _.template(data);
-                }, 'html'));
+        switch (options.type) {
+            case 'templates':
+            case 'template':
+            case 'tpl':
+            case 'views':
+                url.folder = 'tpl/';
+                url.extension = '.html';
+                url.returnType = 'html';
+                break;
+
+            case 'script':
+            case 'js':
+                url.folder = 'js/';
+                url.extension = '.js';
+                url.returnType = 'js';
+                break;
+
+            case 'vendor':
+                url.folder = 'vendor/';
+                url.extension = '.js';
+                url.returType = 'js';
+                break;
+        }
+
+        $.each(elements, function (index, element) {
+            var
+            script,
+            getUrl;
+
+            getUrl = url.folder + element + url.extension;
+            console.log('Get URL', getUrl);
+
+            if (app[element]) {
+                deferreds.push($.get(getUrl, function (data) {
+                    if (url.returnType === 'html')
+                        app[element].prototype.template = _.template(data);
+                    else if (url.returnType === 'js') {
+                        $script = $('<script/>');
+                        $script.attr('src', element);
+                        $script.text(data);
+                        console.log({
+                            $script: $script,
+                            data: data
+                        });
+                        $('body').append($script);
+                    }
+                }, url.returnType));
             } else {
                 if (typeof console !== 'undefined') {
-                    console.error(view + ' not found');
+                    console.error(element + ' not found');
                 } else {
-                    alert(view + ' not found');
+                    alert(element + ' not found');
                 }
             }
         });
@@ -68,12 +114,21 @@ app.Router = Backbone.Router.extend({
     }
 });
 
-$(function () {
-    app.loadTemplates(['HomeView', 'ResumeView', 'ContactView', 'ShellView'],
-        function () {
+$(document).on('ready', function () {
+
+    app.loader({
+        type: 'vendor',
+        elements: ['underscore/underscore.min', 'backbone/backbone.min']
+    }, function () {
+        app.loader({
+            type: 'views',
+            elements: ['HomeView', 'ResumeView', 'ContactView', 'ShellView']
+        }, function () {
             app.router = new app.Router();
             Backbone.history.start({
                 // pushState: true
             });
         });
+    });
+
 });
